@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Battinn Grand Masters – Snooker</title>
+<meta property="og:title" content="The Battinn Grand Masters – Snooker">
+<meta property="og:description" content="Riðlakeppni í snooker – fylgstu með stöðunni!">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f7f5;color:#222;padding:12px}
+.wrap{max-width:820px;margin:0 auto}
+.hdr{text-align:center;padding:18px 12px;background:linear-gradient(135deg,#1a5c2a,#2e8b4a);border-radius:12px;color:#fff;margin-bottom:16px}
+.hdr h1{font-size:26px;font-weight:800;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:10px}
+.hdr p{font-size:13px;opacity:.9;margin-top:6px}
+.info{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:12px;line-height:1.6}
+.info b{color:#333}
+.grp{margin-bottom:28px;background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.grp h2{font-size:18px;font-weight:700;color:#1a5c2a;margin-bottom:10px}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;font-size:13px;width:100%}
+th{padding:6px 4px;border-bottom:2px solid #1a5c2a;font-size:11px;text-align:center}
+th:first-child{text-align:left;padding-left:8px;min-width:170px}
+td{padding:5px 4px;border-bottom:1px solid #e8e8e8;text-align:center}
+td:first-child{text-align:left;padding-left:8px;font-weight:500;white-space:nowrap}
+tr:nth-child(even){background:#f7fbf7}
+.blk{background:#1a5c2a!important}
+.fg{font-weight:700;color:#1a5c2a}
+.tot{font-weight:700;color:#1a5c2a;font-size:14px}
+.res-input{display:flex;gap:2px;justify-content:center;align-items:center}
+.res-input input{width:26px;text-align:center;border:1px solid #ccc;border-radius:4px;padding:3px 0;font-size:13px;background:#fff}
+.res-input input:focus{outline:2px solid #2e8b4a;border-color:#2e8b4a}
+.res-input span{font-size:10px;color:#888}
+.score{font-weight:500;color:#333;font-size:12px}
+.dash{color:#ccc;font-weight:300}
+.ctrls{text-align:right;margin-bottom:12px}
+.btn{border:none;border-radius:7px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;color:#fff;transition:background .2s}
+.btn-edit{background:#1a5c2a}.btn-edit:hover{background:#16501f}
+.btn-save{background:#c62828}.btn-save:hover{background:#b71c1c}
+.hclist{margin-top:20px;padding:14px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.hclist h3{font-size:14px;color:#1a5c2a;margin-bottom:8px}
+.hcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:2px 16px}
+.hcrow{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid #eee;font-size:12px}
+.hcrow .v{font-weight:600;color:#1a5c2a}
+.foot{text-align:center;margin-top:14px;font-size:11px;color:#aaa}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <h1>
+      <svg width="38" height="38" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="bg" cx="40%" cy="35%" r="55%"><stop offset="0%" stop-color="#444"/><stop offset="100%" stop-color="#000"/></radialGradient>
+          <radialGradient id="sh" cx="35%" cy="30%" r="40%"><stop offset="0%" stop-color="rgba(255,255,255,0.35)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient>
+        </defs>
+        <circle cx="50" cy="50" r="46" fill="url(#bg)" stroke="#222" stroke-width="2"/>
+        <circle cx="50" cy="50" r="18" fill="#fff"/>
+        <text x="50" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#000" font-family="Arial,sans-serif">147</text>
+        <circle cx="50" cy="50" r="46" fill="url(#sh)"/>
+      </svg>
+      The Battinn Grand Masters
+    </h1>
+    <p>Snooker · 3 miss regla · Venjulegar snókerreglur eins og á Íslandsmótinu</p>
+  </div>
+
+  <div class="info">
+    <b>Reglur:</b> Allir spila við alla í riðlinum. Spilaðir eru 4 rammar í hverri viðureign (t.d. 4-0, 3-1 eða 2-2 jafntefli).
+  </div>
+
+  <div class="ctrls">
+    <button class="btn btn-edit" id="editBtn" onclick="toggleEdit()">✏️ Skrá úrslit</button>
+  </div>
+
+  <div id="groups"></div>
+
+  <div class="hclist">
+    <h3>Forgjöf allra keppenda</h3>
+    <div class="hcgrid" id="hcgrid"></div>
+  </div>
+
+  <div class="foot">Forgjöf ákveðin af Brynjari Kristjánssyni · Uppfært eftir hvert mót</div>
+</div>
+
+<script>
+const GROUPS = {
+  A: {
+    name: "A riðill",
+    players: [
+      {n:"Brynjar Kristjánsson",h:0},{n:"Stefán Hilmarsson",h:40},{n:"Pétur Kristinsson",h:30},
+      {n:"Arnar Freyr Gunnarsson",h:35},{n:"John V. Yeoman",h:55},{n:"Axel Óli Ægisson",h:30}
+    ]
+  },
+  B: {
+    name: "B riðill",
+    players: [
+      {n:"Andrés Bjarnason",h:50},{n:"Sumarliði Kristján Jónsson",h:35},{n:"Hörður Mörður",h:55},
+      {n:"Hjörtur Stephensen",h:50},{n:"Kristján Hrannar Pálsson",h:35},{n:"Jens Bjarnason",h:35}
+    ]
+  },
+  C: {
+    name: "C riðill",
+    players: [
+      {n:"Þórir Úlfarsson",h:30},{n:"Garðar Ólafsson",h:40},{n:"Guðmundur Magnússon",h:15},
+      {n:"Daníel Hörður Skúlason",h:55},{n:"Guðmar Einarsson",h:55}
+    ]
+  }
+};
+
+const EXTRA = [
+  {n:"Arnar Þór Guðmundsson",h:40},{n:"Astvaldur Frímann Heiðarsson",h:15},
+  {n:"Jón Þórðarson",h:35},{n:"Pétur Valgarð Pétursson",h:30},{n:"Sveinbjörn Grétarsson",h:50}
+];
+
+let results = {};
+let editing = false;
+
+function init() {
+  for (const g in GROUPS) {
+    const p = GROUPS[g].players;
+    results[g] = {};
+    for (let i = 0; i < p.length; i++)
+      for (let j = i+1; j < p.length; j++)
+        results[g][i+"-"+j] = {a:"",b:""};
+  }
+  load();
+  render();
+  renderHC();
+}
+
+function save() {}
+
+function load() {}
+
+function toggleEdit() {
+  editing = !editing;
+  if (!editing) save();
+  const btn = document.getElementById("editBtn");
+  btn.textContent = editing ? "✓ Vista úrslit" : "✏️ Skrá úrslit";
+  btn.className = editing ? "btn btn-save" : "btn btn-edit";
+  render();
+}
+
+function setScore(g, key, side, val) {
+  results[g][key][side] = val;
+  save();
+  render();
+}
+
+function calcTotals(players, res) {
+  const totals = players.map(() => 0);
+  for (let i = 0; i < players.length; i++)
+    for (let j = i+1; j < players.length; j++) {
+      const m = res[i+"-"+j];
+      if (!m || m.a==="" || m.b==="") continue;
+      const a = parseInt(m.a), b = parseInt(m.b);
+      if (isNaN(a) || isNaN(b)) continue;
+      totals[i] += a;
+      totals[j] += b;
+    }
+  return totals;
+}
+
+function render() {
+  let html = "";
+  for (const g in GROUPS) {
+    const gr = GROUPS[g], pl = gr.players, n = pl.length, res = results[g];
+    const totals = calcTotals(pl, res);
+
+    html += '<div class="grp"><h2>'+gr.name+'</h2><div class="tbl-wrap"><table><thead><tr><th></th>';
+    for (let i = 0; i < n; i++) html += '<th style="width:56px;min-width:56px">'+(i+1)+'</th>';
+    html += '<th style="width:40px">FG</th>';
+    html += '<th style="width:50px">Samtals</th>';
+    html += '</tr></thead><tbody>';
+
+    for (let i = 0; i < n; i++) {
+      html += '<tr><td>'+(i+1)+'. '+pl[i].n+'</td>';
+      for (let j = 0; j < n; j++) {
+        if (i===j) { html += '<td class="blk"></td>'; continue; }
+        const up = i<j, k = up ? i+"-"+j : j+"-"+i;
+        const m = res[k]||{a:"",b:""};
+        const my = up?m.a:m.b, opp = up?m.b:m.a;
+        if (editing && up) {
+          html += '<td><div class="res-input">';
+          html += '<input type="number" min="0" max="4" value="'+m.a+'" onchange="setScore(\''+g+'\',\''+k+'\',\'a\',this.value)">';
+          html += '<span>–</span>';
+          html += '<input type="number" min="0" max="4" value="'+m.b+'" onchange="setScore(\''+g+'\',\''+k+'\',\'b\',this.value)">';
+          html += '</div></td>';
+        } else {
+          const disp = my!==""&&opp!=="" ? '<span class="score">'+my+'-'+opp+'</span>' : '<span class="dash">–</span>';
+          html += '<td>'+disp+'</td>';
+        }
+      }
+      html += '<td class="fg">'+pl[i].h+'</td>';
+      html += '<td class="tot">'+totals[i]+'</td>';
+      html += '</tr>';
+    }
+    html += '</tbody></table></div></div>';
+  }
+  document.getElementById("groups").innerHTML = html;
+}
+
+function renderHC() {
+  const all = [];
+  for (const g in GROUPS) GROUPS[g].players.forEach(p=>all.push(p));
+  EXTRA.forEach(p=>all.push(p));
+  all.sort((a,b)=>a.h-b.h);
+  document.getElementById("hcgrid").innerHTML = all.map(p=>'<div class="hcrow"><span>'+p.n+'</span><span class="v">'+p.h+'</span></div>').join("");
+}
+
+init();
+</script>
+</body>
+</html>
