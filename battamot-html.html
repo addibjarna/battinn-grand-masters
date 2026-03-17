@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battinn Grand Masters – Snooker</title>
+<meta property="og:title" content="Battinn Grand Masters – Snooker">
+<meta property="og:description" content="Riðlakeppni í snooker – fylgstu með stöðunni!">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f5f7f5;color:#222;padding:12px}
+.wrap{max-width:860px;margin:0 auto}
+.hdr{text-align:center;padding:18px 12px;background:linear-gradient(135deg,#1a5c2a,#2e8b4a);border-radius:12px;color:#fff;margin-bottom:16px}
+.hdr h1{font-size:26px;font-weight:800;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:10px}
+.info{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:12px;line-height:1.6}
+.info b{color:#333}
+.grp{margin-bottom:28px;background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.grp h2{font-size:18px;font-weight:700;color:#1a5c2a;margin-bottom:10px}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;font-size:13px;width:100%}
+th{padding:6px 4px;border-bottom:2px solid #1a5c2a;font-size:11px;text-align:center}
+th:first-child{text-align:left;padding-left:8px;min-width:170px}
+td{padding:5px 4px;border-bottom:1px solid #e8e8e8;text-align:center}
+td:first-child{text-align:left;padding-left:8px;font-weight:500;white-space:nowrap}
+tr:nth-child(even){background:#f7fbf7}
+.blk{background:#1a5c2a!important}
+.fg{font-weight:700;color:#1a5c2a}
+.tot{font-weight:700;color:#1a5c2a;font-size:14px}
+.score{font-weight:500;color:#333;font-size:12px}
+.dash{color:#ccc;font-weight:300}
+.sc-btn{background:none;border:1px solid #ccc;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:11px;color:#1a5c2a;transition:all .2s}
+.sc-btn:hover{background:#e8f5e9;border-color:#1a5c2a}
+.modal-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:100;justify-content:center;align-items:center}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;max-width:320px;width:90%;text-align:center}
+.modal h3{color:#1a5c2a;margin-bottom:12px;font-size:16px}
+.modal p{font-size:13px;color:#555;margin-bottom:16px}
+.modal-scores{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px}
+.modal-scores input{width:50px;height:40px;text-align:center;border:2px solid #ccc;border-radius:8px;font-size:20px;font-weight:700}
+.modal-scores input:focus{outline:none;border-color:#1a5c2a}
+.modal-scores span{font-size:20px;color:#888}
+.modal-btns{display:flex;gap:8px;justify-content:center}
+.modal-btns button{padding:8px 20px;border-radius:7px;border:none;font-size:13px;font-weight:600;cursor:pointer}
+.btn-ok{background:#1a5c2a;color:#fff}.btn-ok:hover{background:#16501f}
+.btn-cancel{background:#eee;color:#555}.btn-cancel:hover{background:#ddd}
+.saving{color:#888;font-size:11px;text-align:center;margin-top:4px}
+.hclist{margin-top:20px;padding:14px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.hclist h3{font-size:14px;color:#1a5c2a;margin-bottom:8px}
+.hcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:2px 16px}
+.hcrow{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid #eee;font-size:12px}
+.hcrow .v{font-weight:600;color:#1a5c2a}
+.foot{text-align:center;margin-top:14px;font-size:11px;color:#aaa}
+.bracket{margin-top:28px;background:#fff;border-radius:10px;padding:14px 10px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.bracket h2{font-size:18px;font-weight:700;color:#1a5c2a;margin-bottom:14px;text-align:center}
+.b-grid{display:flex;gap:10px;align-items:flex-start;overflow-x:auto}
+.b-col{flex:1;min-width:180px}
+.b-round{font-size:11px;font-weight:600;color:#888;text-align:center;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.b-match{background:#f0f7f1;border:1px solid #d0e8d4;border-radius:8px;padding:8px 10px;margin-bottom:10px}
+.b-player{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px}
+.b-player.winner{font-weight:700;color:#1a5c2a}
+.b-vs{text-align:center;font-size:9px;color:#aaa;padding:2px 0}
+.b-score{min-width:20px;text-align:center;font-weight:600}
+.b-tbd{color:#bbb;font-style:italic;font-size:12px}
+.b-champion{text-align:center;margin-top:12px;padding:14px;background:linear-gradient(135deg,#f9f3e3,#fff8e1);border:2px solid #f0c040;border-radius:10px}
+.b-champion .champ-name{font-size:18px;font-weight:700;color:#1a5c2a;margin-top:4px}
+.status-bar{text-align:center;padding:6px;font-size:11px;border-radius:6px;margin-bottom:12px}
+.status-bar.loading{color:#888;background:#f9f9f9}
+.status-bar.ok{color:#1a5c2a;background:#e8f5e9}
+.status-bar.err{color:#c62828;background:#ffebee}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <h1>
+      <svg width="38" height="38" viewBox="0 0 100 100"><defs><radialGradient id="bg" cx="40%" cy="35%" r="55%"><stop offset="0%" stop-color="#444"/><stop offset="100%" stop-color="#000"/></radialGradient><radialGradient id="sh" cx="35%" cy="30%" r="40%"><stop offset="0%" stop-color="rgba(255,255,255,0.35)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="50" cy="50" r="46" fill="url(#bg)" stroke="#222" stroke-width="2"/><circle cx="50" cy="50" r="18" fill="#fff"/><text x="50" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#000" font-family="Arial,sans-serif">147</text><circle cx="50" cy="50" r="46" fill="url(#sh)"/></svg>
+      Battinn Grand Masters
+    </h1>
+  </div>
+  <div class="info">
+    <b>Reglur:</b> Allir spila við alla í riðlinum. Spilaðir eru 4 rammar í hverri viðureign (t.d. 4-0, 3-1 eða 2-2 jafntefli). 2 efstu úr hverjum riðli komast í 8 manna úrslitakeppni. Snooker · 3 miss regla · Venjulegar snókerreglur eins og á Íslandsmótinu.
+  </div>
+  <div class="status-bar loading" id="status">Hleð gögnunum...</div>
+  <div id="groups"></div>
+  <div id="bracketSection"></div>
+  <div class="hclist"><h3>Forgjöf allra keppenda</h3><div class="hcgrid" id="hcgrid"></div></div>
+  <div class="foot">Forgjöf ákveðin af Brynjari Kristjánssyni · Uppfært eftir hvert mót</div>
+</div>
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3>Skrá úrslit</h3>
+    <p id="m-desc"></p>
+    <div class="modal-scores"><input type="number" id="m-a" min="0" max="4" placeholder="0"><span>–</span><input type="number" id="m-b" min="0" max="4" placeholder="0"></div>
+    <div class="modal-btns"><button class="btn-cancel" onclick="closeModal()">Hætta við</button><button class="btn-ok" onclick="saveModal()">Vista</button></div>
+    <div class="saving" id="m-status"></div>
+  </div>
+</div>
+<script>
+const GROUPS={A:{name:"A riðill",players:[{n:"Brynjar Kristjánsson",h:0},{n:"Stefán Hilmarsson",h:40},{n:"Pétur Kristinsson",h:30},{n:"Arnar Freyr Gunnarsson",h:35},{n:"John V. Yeoman",h:55},{n:"Axel Óli Ægisson",h:30}]},B:{name:"B riðill",players:[{n:"Andrés Bjarnason",h:50},{n:"Sumarliði Kristján Jónsson",h:35},{n:"Hörður Mörður",h:55},{n:"Hjörtur Stephensen",h:50},{n:"Kristján Hrannar Pálsson",h:35},{n:"Jens Bjarnason",h:35}]},C:{name:"C riðill",players:[{n:"Þórir Úlfarsson",h:30},{n:"Garðar Ólafsson",h:40},{n:"Guðmundur Magnússon",h:15},{n:"Daníel Hörður Skúlason",h:55},{n:"Guðmar Einarsson",h:55}]},D:{name:"D riðill",players:[{n:"Astvaldur Frímann Heiðarsson",h:15},{n:"Sveinbjörn Grétarsson",h:50},{n:"Arnar Þór Guðmundsson",h:40},{n:"Pétur Valgarð Pétursson",h:30},{n:"Jón Þórðarson",h:35}]}};
+let results={},bracket={qf:{},sf:{},f:{}},modalCtx=null;
+
+function ensureStructure(){for(const g in GROUPS){if(!results[g])results[g]={};const p=GROUPS[g].players;for(let i=0;i<p.length;i++)for(let j=i+1;j<p.length;j++){const k=i+"-"+j;if(!results[g][k])results[g][k]={a:"",b:""};}}if(!bracket.qf)bracket.qf={};if(!bracket.sf)bracket.sf={};if(!bracket.f)bracket.f={};for(let i=1;i<=4;i++)if(!bracket.qf[i])bracket.qf[i]={a:"",b:""};for(let i=1;i<=2;i++)if(!bracket.sf[i])bracket.sf[i]={a:"",b:""};if(!bracket.f[1])bracket.f[1]={a:"",b:""};}
+
+async function loadData(){
+  try{const r=await fetch('/api/scores');if(r.ok){const d=await r.json();results=d.results||{};bracket=d.bracket||{qf:{},sf:{},f:{}};}
+    document.getElementById("status").textContent="Tengt! Smelltu á 'Skrá' til að setja inn úrslit.";document.getElementById("status").className="status-bar ok";
+  }catch(e){document.getElementById("status").textContent="Villa við tengingu. Reyndu aftur.";document.getElementById("status").className="status-bar err";}
+  ensureStructure();render();renderBracket();renderHC();
+}
+async function saveData(){
+  try{await fetch('/api/scores',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({results,bracket})});return true;}catch(e){return false;}
+}
+function openModal(g,key,p1,p2,round,match){
+  modalCtx={g,key,p1,p2,round,match};document.getElementById('m-desc').textContent=p1+' gegn '+p2;
+  const cur=round?(bracket[round]&&bracket[round][match])||{a:"",b:""}:(results[g]&&results[g][key])||{a:"",b:""};
+  document.getElementById('m-a').value=cur.a;document.getElementById('m-b').value=cur.b;
+  document.getElementById('m-status').textContent='';document.getElementById('modal').classList.add('open');document.getElementById('m-a').focus();
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');modalCtx=null;}
+async function saveModal(){
+  if(!modalCtx)return;const a=document.getElementById('m-a').value,b=document.getElementById('m-b').value;
+  const ai=parseInt(a),bi=parseInt(b);
+  if(a===""||b===""||isNaN(ai)||isNaN(bi)||ai<0||ai>4||bi<0||bi>4||ai+bi>4){document.getElementById('m-status').textContent='Ógild gildi! Hámark 4 rammar samtals.';return;}
+  document.getElementById('m-status').textContent='Vista...';
+  if(modalCtx.round){bracket[modalCtx.round][modalCtx.match]={a,b};}else{results[modalCtx.g][modalCtx.key]={a,b};}
+  const ok=await saveData();
+  if(ok){closeModal();render();renderBracket();}else{document.getElementById('m-status').textContent='Villa! Reyndu aftur.';}
+}
+function calcTotals(pl,res){const t=pl.map(()=>0);for(let i=0;i<pl.length;i++)for(let j=i+1;j<pl.length;j++){const m=res[i+"-"+j];if(!m||m.a===""||m.b==="")continue;const a=parseInt(m.a),b=parseInt(m.b);if(isNaN(a)||isNaN(b))continue;t[i]+=a;t[j]+=b;}return t;}
+function getTopTwo(gk){const pl=GROUPS[gk].players,res=results[gk]||{},t=calcTotals(pl,res);const r=pl.map((p,i)=>({name:p.n,total:t[i]}));r.sort((a,b)=>b.total-a.total);return r[0].total>0?[r[0].name,r[1].name]:[null,null];}
+function getMatchPlayers(round,match){if(round==="qf"){const pairs=[["A","B"],["B","A"],["C","D"],["D","C"]];const p=pairs[match-1];return[getTopTwo(p[0])[0],getTopTwo(p[1])[1]];}if(round==="sf"){return match===1?[getMatchWinner("qf",1),getMatchWinner("qf",2)]:[getMatchWinner("qf",3),getMatchWinner("qf",4)];}if(round==="f")return[getMatchWinner("sf",1),getMatchWinner("sf",2)];return[null,null];}
+function getMatchWinner(round,match){const m=bracket[round]&&bracket[round][match];if(!m||m.a===""||m.b==="")return null;const a=parseInt(m.a),b=parseInt(m.b);if(isNaN(a)||isNaN(b)||a===b)return null;const pl=getMatchPlayers(round,match);if(!pl[0]||!pl[1])return null;return a>b?pl[0]:pl[1];}
+function shortName(n){if(!n)return null;const p=n.split(" ");return p.length<=2?n:p[0]+" "+p[p.length-1];}
+function render(){
+  let html="";for(const g in GROUPS){const gr=GROUPS[g],pl=gr.players,n=pl.length,res=results[g]||{},totals=calcTotals(pl,res);
+    html+='<div class="grp"><h2>'+gr.name+'</h2><div class="tbl-wrap"><table><thead><tr><th></th>';
+    for(let i=0;i<n;i++)html+='<th style="width:56px;min-width:56px">'+(i+1)+'</th>';
+    html+='<th style="width:40px">FG</th><th style="width:70px">Rammatala</th></tr></thead><tbody>';
+    for(let i=0;i<n;i++){html+='<tr><td>'+(i+1)+'. '+pl[i].n+'</td>';
+      for(let j=0;j<n;j++){if(i===j){html+='<td class="blk"></td>';continue;}
+        const up=i<j,k=up?i+"-"+j:j+"-"+i,m=res[k]||{a:"",b:""};const my=up?m.a:m.b,opp=up?m.b:m.a,disp=my!==""&&opp!==""?my+'-'+opp:'';
+        if(up){const p1=pl[i].n.replace(/'/g,"\\'"),p2=pl[j].n.replace(/'/g,"\\'");html+='<td><button class="sc-btn" onclick="openModal(\''+g+'\',\''+k+'\',\''+p1+'\',\''+p2+'\',null,null)">'+(disp||'Skrá')+'</button></td>';}
+        else{html+='<td>'+(disp?'<span class="score">'+disp+'</span>':'<span class="dash">–</span>')+'</td>';}}
+      html+='<td class="fg">'+pl[i].h+'</td><td class="tot">'+totals[i]+'</td></tr>';}
+    html+='</tbody></table></div></div>';}
+  document.getElementById("groups").innerHTML=html;
+}
+function renderBracket(){
+  const qfL=[["1. úr A","2. úr B"],["1. úr B","2. úr A"],["1. úr C","2. úr D"],["1. úr D","2. úr C"]];
+  function mH(round,match,fb){const pl=getMatchPlayers(round,match),m=(bracket[round]&&bracket[round][match])||{a:"",b:""};const p1=pl[0]?shortName(pl[0]):fb[0],p2=pl[1]?shortName(pl[1]):fb[1];const hasS=m.a!==""&&m.b!=="",a=hasS?parseInt(m.a):null,b=hasS?parseInt(m.b):null;const w1=hasS&&a>b,w2=hasS&&b>a,canEdit=pl[0]&&pl[1];let h='<div class="b-match"><div class="b-player'+(w1?" winner":"")+'"><span>'+(pl[0]?p1:'<span class="b-tbd">'+p1+'</span>')+'</span><span class="b-score">'+(hasS?m.a:"")+'</span></div><div class="b-vs">gegn</div><div class="b-player'+(w2?" winner":"")+'"><span>'+(pl[1]?p2:'<span class="b-tbd">'+p2+'</span>')+'</span><span class="b-score">'+(hasS?m.b:"")+'</span></div>';if(canEdit){const n1=(pl[0]||'').replace(/'/g,"\\'"),n2=(pl[1]||'').replace(/'/g,"\\'");h+='<div style="text-align:center;margin-top:4px"><button class="sc-btn" onclick="openModal(null,null,\''+n1+'\',\''+n2+'\',\''+round+'\','+match+')">Skrá úrslit</button></div>';}h+='</div>';return h;}
+  let html='<div class="bracket"><h2>8 manna úrslitakeppni</h2><div class="b-grid"><div class="b-col"><div class="b-round">Einstök úrslit</div>';
+  for(let i=1;i<=4;i++)html+=mH("qf",i,qfL[i-1]);
+  html+='</div><div class="b-col"><div class="b-round">Undanúrslit</div><div style="margin-top:32px">'+mH("sf",1,["Sigurvegari 1","Sigurvegari 2"])+'</div><div style="margin-top:32px">'+mH("sf",2,["Sigurvegari 3","Sigurvegari 4"])+'</div></div>';
+  html+='<div class="b-col"><div class="b-round">Úrslit</div><div style="margin-top:80px">'+mH("f",1,["Sigurvegari","Sigurvegari"])+'</div>';
+  const ch=getMatchWinner("f",1);if(ch)html+='<div class="b-champion"><div style="font-size:28px">&#127942;</div><div class="champ-name">'+ch+'</div><div style="font-size:12px;color:#888;margin-top:4px">Battinn Grand Masters</div></div>';
+  html+='</div></div></div>';document.getElementById("bracketSection").innerHTML=html;
+}
+function renderHC(){const all=[];for(const g in GROUPS)GROUPS[g].players.forEach(p=>all.push(p));all.sort((a,b)=>a.h-b.h);document.getElementById("hcgrid").innerHTML=all.map(p=>'<div class="hcrow"><span>'+p.n+'</span><span class="v">'+p.h+'</span></div>').join("");}
+loadData();
+</script>
+</body>
+</html>
